@@ -2,10 +2,8 @@
 set -e
 
 # Torch install
-if [ ! -d ~/torch ];then
-  git clone https://github.com/torch/distro.git ~/torch --recursive
-fi
-cd ~/torch; bash install-deps;
+git clone https://github.com/torch/distro.git tmp/torch --recursive
+cd tmp/torch; bash install-deps;
 ./install.sh
 
 
