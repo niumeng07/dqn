@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
+set -e
 
-######################################################################
 # Torch install
-######################################################################
+if [ ! -d ~/torch ];then
+  git clone https://github.com/torch/distro.git ~/torch --recursive
+fi
+cd ~/torch; bash install-deps;
+./install.sh
 
 
 TOPDIR=$PWD
@@ -15,35 +19,29 @@ if [[ `uname` != 'Linux' ]]; then
   echo 'Platform unsupported, only available for Linux'
   exit
 fi
-if [[ `which apt-get` == '' ]]; then
-    echo 'apt-get not found, platform not supported'
+if [[ `which yum` == '' ]]; then
+    echo 'yum not found, platform not supported'
     exit
 fi
 
 # Install dependencies for Torch:
-sudo apt-get update
-sudo apt-get install -qqy build-essential
-sudo apt-get install -qqy gcc g++
-sudo apt-get install -qqy cmake
-sudo apt-get install -qqy curl
-sudo apt-get install -qqy libreadline-dev
-sudo apt-get install -qqy git-core
-sudo apt-get install -qqy libjpeg-dev
-sudo apt-get install -qqy libpng-dev
-sudo apt-get install -qqy ncurses-dev
-sudo apt-get install -qqy imagemagick
-sudo apt-get install -qqy unzip
-sudo apt-get update
+sudo yum install build-essential
+sudo yum install gcc g++
+sudo yum install cmake
+sudo yum install curl
+sudo yum install libreadline-dev
+sudo yum install git-core
+sudo yum install libjpeg-dev
+sudo yum install libpng-dev
+sudo yum install ncurses-dev
+sudo yum install imagemagick
+sudo yum install unzip
 
 
 echo "==> Torch7's dependencies have been installed"
 
-
-
-
-
 # Build and install Torch7
-cd /tmp
+cd tmp
 rm -rf luajit-rocks
 git clone https://github.com/torch/luajit-rocks.git
 cd luajit-rocks
@@ -95,7 +93,7 @@ RET=$?; if [ $RET -ne 0 ]; then echo "Error. Exiting."; exit $RET; fi
 echo "nngraph installation completed"
 
 echo "Installing Xitari ... "
-cd /tmp
+cd tmp
 rm -rf xitari
 git clone https://github.com/deepmind/xitari.git
 cd xitari
@@ -104,7 +102,7 @@ RET=$?; if [ $RET -ne 0 ]; then echo "Error. Exiting."; exit $RET; fi
 echo "Xitari installation completed"
 
 echo "Installing Alewrap ... "
-cd /tmp
+cd tmp
 rm -rf alewrap
 git clone https://github.com/deepmind/alewrap.git
 cd alewrap
