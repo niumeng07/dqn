@@ -157,6 +157,3 @@ class DoubleDQN:
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
         self.learn_step_counter += 1
 
-
-
-

@@ -5,6 +5,7 @@
 ## 4. berkeley-pacman: berkeley吃豆人RL入门作业
 ## 5. stanford-autodriver: stanford自动驾驶RL入门作业
 ## 6. berkeley-cs294
+## 7. rl-tensorflow: github.com/MorvanZhou/Reinforcement-learning-with-tensorflow.git
 
 ### 1. deep_rl
 
