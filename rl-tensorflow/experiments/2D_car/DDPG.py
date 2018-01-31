@@ -9,8 +9,6 @@ Using LOAD = True to reload the trained model for playing.
 
 You can customize this script in a way you want.
 
-View more on [莫烦Python] : https://morvanzhou.github.io/tutorials/
-
 Requirement:
 pyglet >= 1.2.4
 numpy >= 1.12.1
