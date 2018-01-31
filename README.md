@@ -2,6 +2,9 @@
 ## 1. deep_rl: Google Paper [human level contron through deep reinforcement learning]
 ## 2. dqn_cartpole: [cartpole experiment]
 ## 3. Gomoku
+## 4. berkeley-pacman: berkeley吃豆人RL入门作业
+## 5. stanford-autodriver: stanford自动驾驶RL入门作业
+## 6. berkeley-cs294
 
 ### 1. deep_rl
 
