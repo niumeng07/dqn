@@ -1,3 +1,4 @@
+#coding:utf8
 #######################################################################
 # Copyright (C)                                                       #
 # 2016 Shangtong Zhang(zhangshangtong.cpp@gmail.com)                  #
@@ -28,11 +29,11 @@ class State:
         self.end = None
 
     # calculate the hash value for one state, it's unique
-    def getHash(self):
+    def getHash(self): #给当前State一个唯一的Hash值
         if self.hashVal is None:
             self.hashVal = 0
             for i in self.data.reshape(BOARD_ROWS * BOARD_COLS):
-                if i == -1:
+                if i == -1:#这个处理,防止减1重复,避免加1两个player区分不开
                     i = 2
                 self.hashVal = self.hashVal * 3 + i
         return int(self.hashVal)
@@ -62,7 +63,7 @@ class State:
                 self.winner = 1
                 self.end = True
                 return self.end
-            if result == -3:
+            if result == -3:#判断游戏结束且给出胜利者...
                 self.winner = -1
                 self.end = True
                 return self.end
@@ -70,7 +71,7 @@ class State:
         # whether it's a tie
         sum = np.sum(np.abs(self.data))
         if sum == BOARD_ROWS * BOARD_COLS:
-            self.winner = 0
+            self.winner = 0   #棋盘已满，但没有分出胜负——平局
             self.end = True
             return self.end
 
@@ -80,7 +81,7 @@ class State:
 
     # @symbol 1 or -1
     # put chessman symbol in position (i, j)
-    def nextState(self, i, j, symbol):
+    def nextState(self, i, j, symbol): # 在(i,j)位置下子，symbol为1 or -1代表两个Player
         newState = State()
         newState.data = np.copy(self.data)
         newState.data[i, j] = symbol
@@ -112,14 +113,14 @@ def getAllStatesImpl(currentState, currentSymbol, allStates):
                     isEnd = newState.isEnd()
                     allStates[newHash] = (newState, isEnd)
                     if not isEnd:
-                        getAllStatesImpl(newState, -currentSymbol, allStates)
+                        getAllStatesImpl(newState, -currentSymbol, allStates)#交替下子
 
 def getAllStates():
     currentSymbol = 1
-    currentState = State()
-    allStates = dict()
+    currentState = State()#初始状态，全0
+    allStates = dict()#key:StateHashValue, value:(State, isEnd)
     allStates[currentState.getHash()] = (currentState, currentState.isEnd())
-    getAllStatesImpl(currentState, currentSymbol, allStates)
+    getAllStatesImpl(currentState, currentSymbol, allStates)#1先下子
     return allStates
 
 # all possible board configurations
@@ -132,7 +133,7 @@ class Judger:
     def __init__(self, player1, player2, feedback=True):
         self.p1 = player1
         self.p2 = player2
-        self.feedback = feedback
+        self.feedback = feedback  #??
         self.currentPlayer = None
         self.p1Symbol = 1
         self.p2Symbol = -1
@@ -144,13 +145,13 @@ class Judger:
     # give reward to two players
     def giveReward(self):
         if self.currentState.winner == self.p1Symbol:
-            self.p1.feedReward(1)
-            self.p2.feedReward(0)
+            self.p1.feedReward(1)  #胜则feed 1
+            self.p2.feedReward(0)  #败在feed 0
         elif self.currentState.winner == self.p2Symbol:
             self.p1.feedReward(0)
             self.p2.feedReward(1)
         else:
-            self.p1.feedReward(0.1)
+            self.p1.feedReward(0.1) #平局时p1/p2的reward并不同
             self.p2.feedReward(0.5)
 
     def feedCurrentState(self):
@@ -191,7 +192,9 @@ class Player:
     # @exploreRate: possibility to explore
     def __init__(self, stepSize = 0.1, exploreRate=0.1):
         self.allStates = allStates
-        self.estimations = dict()
+        #每个状态一个reward
+        #如果win则reward=1,fail则reward=0,未结束则0.5
+        self.estimations = dict()  #key=StateHashVel, value=reward
         self.stepSize = stepSize
         self.exploreRate = exploreRate
         self.states = []
@@ -220,10 +223,10 @@ class Player:
         if len(self.states) == 0:
             return
         self.states = [state.getHash() for state in self.states]
-        target = reward
+        target = reward #传入的reward值,胜feed=1,败feed=0,平局时先手fee=0.1,后手feed=0.5
         for latestState in reversed(self.states):
             value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])
-            self.estimations[latestState] = value
+            self.estimations[latestState] = value  #更新reward
             target = value
         self.states = []
 
@@ -235,20 +238,20 @@ class Player:
         for i in range(BOARD_ROWS):
             for j in range(BOARD_COLS):
                 if state.data[i, j] == 0:
-                    nextPositions.append([i, j])
-                    nextStates.append(state.nextState(i, j, self.symbol).getHash())
-        if np.random.binomial(1, self.exploreRate):
+                    nextPositions.append([i, j]) #获取所有可下子的位置
+                    nextStates.append(state.nextState(i, j, self.symbol).getHash())  #在每个位置下子后形成的状态
+        if np.random.binomial(1, self.exploreRate): #explore
             np.random.shuffle(nextPositions)
             # Not sure if truncating is the best way to deal with exploratory step
             # Maybe it's better to only skip this step rather than forget all the history
             self.states = []
-            action = nextPositions[0]
+            action = nextPositions[0]  #随机取出一个下子的位置并返回
             action.append(self.symbol)
             return action
 
         values = []
         for hash, pos in zip(nextStates, nextPositions):
-            values.append((self.estimations[hash], pos))
+            values.append((self.estimations[hash], pos)) #在每个位置下子后的reward
         np.random.shuffle(values)
         values.sort(key=lambda x: x[0], reverse=True)
         action = values[0][1]
