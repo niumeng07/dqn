@@ -304,7 +304,8 @@ def train(epochs=20000):
     player1Win = 0.0
     player2Win = 0.0
     for i in range(0, epochs):
-        print("Epoch", i)
+        if i % 100 == 0:
+            print("Epoch", i)
         winner = judger.play()
         if winner == 1:
             player1Win += 1
@@ -325,7 +326,8 @@ def compete(turns=500):
     player1Win = 0.0
     player2Win = 0.0
     for i in range(0, turns):
-        print("Epoch", i)
+        if i % 10 == 0:
+            print("Epoch", i)
         winner = judger.play()
         if winner == 1:
             player1Win += 1
