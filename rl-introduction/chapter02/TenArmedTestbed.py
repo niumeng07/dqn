@@ -1,17 +1,10 @@
-#######################################################################
-# Copyright (C)                                                       #
-# 2016 Shangtong Zhang(zhangshangtong.cpp@gmail.com)                  #
-# 2016 Tian Jun(tianjun.cpp@gmail.com)                                #
-# 2016 Artem Oboturov(oboturov@gmail.com)                             #
-# 2016 Kenta Shimada(hyperkentakun@gmail.com)                         #
-# Permission given to modify the code as long as you keep this        #
-# declaration at the top                                              #
-#######################################################################
-
 from __future__ import print_function
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import pdb
+
+figureIndex = 0
 
 class Bandit:
     # @kArm: # of arms
@@ -96,8 +89,6 @@ class Bandit:
             # update estimation with constant step size
             self.qEst[action] += self.stepSize * (reward - self.qEst[action])
         return reward
-
-figureIndex = 0
 
 # for figure 2.1
 def figure2_1():
