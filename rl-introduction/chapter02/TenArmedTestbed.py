@@ -222,13 +222,14 @@ def figure2_6(nBandits, time):
     plt.legend()
 
 
-figure2_1()
-epsilonGreedy(2000, 1000)
-optimisticInitialValues(2000, 1000)
-ucb(2000, 1000)
-gradientBandit(2000, 1000)
+if __name__ == "__main__":
+    figure2_1()
+    epsilonGreedy(2000, 1000)
+    optimisticInitialValues(2000, 1000)
+    ucb(2000, 1000)
+    gradientBandit(2000, 1000)
 
-# This will take somehow a long time
-figure2_6(2000, 1000)
+    # This will take somehow a long time
+    figure2_6(2000, 1000)
 
-plt.show()
+    plt.show()
